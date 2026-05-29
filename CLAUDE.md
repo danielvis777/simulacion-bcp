@@ -1,87 +1,108 @@
 # CLAUDE.md — simulacion-bcp
 
-## Project Overview
+## Qué es este proyecto
 
-This repository contains the assets for an **educational phishing simulation** conducted under the name of Banco BCP (Banco de Crédito del Perú). Its sole purpose is security awareness training: employees receive a simulated phishing email and, if they click the link, they land on a page that explains what happened and reinforces safe behavior.
+Simulación educativa de phishing para Banco BCP. Cuando un empleado hace clic en
+el correo simulado, llega a una landing que le explica que fue un ejercicio.
+Stack: HTML estático puro. Sin frameworks, sin build tools, sin dependencias.
+Etapa: inicial / operativo en campañas puntuales.
 
-## Repository Structure
+Archivos:
+- `plantilla_email.html` — correo de phishing simulado (se personaliza por destinatario)
+- `landing.html` — página que ve el usuario al hacer clic
+- `participantes.csv` — lista de participatnes con nombre, correo y hash de rastreo
+
+---
+
+## Cómo encarar las tareas
+
+### Antes de ejecutar cualquier tarea
+
+1. Lee todos los archivos relevantes primero. No preguntes cosas que puedes
+   descubrir leyendo el código.
+2. Si la tarea toca más de un archivo o cambia la estructura del proyecto,
+   escribe un plan numerado y espera confirmación antes de tocar nada.
+3. El plan debe decir exactamente: qué archivos se modifican, qué líneas cambian,
+   y por qué. Sin ese detalle, el plan no es válido.
+
+### Cómo ejecutar
+
+4. Aplica el cambio mínimo que resuelve el problema. Si la solución cabe en
+   5 líneas, no la conviertas en 20.
+5. No crees funciones, clases, helpers ni abstracciones que no se pidieron
+   explícitamente. Tres líneas repetidas son mejores que una abstracción prematura.
+6. No toques líneas que no están relacionadas con el pedido, aunque te parezcan
+   mejorables.
+
+### Autonomía (hacer sin pedir permiso)
+
+7. Corrige errores de indentación y espaciado directamente, sin preguntar.
+8. Si hay un bug evidente y pequeño (typo, etiqueta HTML mal cerrada, placeholder
+   sin reemplazar), corrígelo y menciona qué cambiaste al final.
+9. Investiga el problema en el código antes de hacerme cualquier pregunta.
+   Solo pregunta si después de investigar sigues sin poder resolverlo.
+
+### Lo que NO debes hacer
+
+10. No agregues comentarios que expliquen qué hace el código. El código bien
+    escrito se explica solo.
+11. No instales dependencias, no agregues frameworks, no introduzcas npm, vite
+    ni ninguna herramienta de build sin que yo lo pida explícitamente.
+12. No cambies la estructura de carpetas sin confirmar primero.
+13. No uses placeholders genéricos como `TODO` o `FIXME` en el código entregado.
+
+---
+
+## Convenciones de este proyecto
+
+- Indentación: 4 espacios en HTML.
+- Placeholders dinámicos usan guillemets: `«Nombre»`, `«Enlace»`. Nunca usar
+  `{{nombre}}`, `${nombre}` ni ningún otro formato.
+- Colores de marca BCP: azul `#003366`, naranja `#ff6600`. No cambiarlos.
+- Todo el texto visible al usuario va en español (es-PE).
+- El footer del email y la landing siempre deben incluir la leyenda
+  "Ejercicio Educativo". No eliminarla.
+
+---
+
+## Verificación antes de dar algo por terminado
+
+Antes de decir que una tarea está lista, confirma estos puntos:
+
+- [ ] ¿Todos los placeholders `«…»` fueron reemplazados o siguen donde deben?
+- [ ] ¿El HTML abre y cierra todas las etiquetas correctamente?
+- [ ] ¿La leyenda "Ejercicio Educativo" sigue presente?
+- [ ] ¿El cambio no tocó líneas fuera del scope del pedido?
+- [ ] ¿La solución es la más simple posible para el problema dado?
+
+Si alguna respuesta es no, corrígelo antes de reportar la tarea como completa.
+
+---
+
+## Ciclo de mejora continua
+
+Cada vez que termines una tarea, anota al final de tu respuesta una línea con
+este formato exacto:
 
 ```
-simulacion-bcp/
-├── plantilla_email.html   # Phishing email template (sent to participants)
-├── landing.html           # Landing page shown after clicking the link
-└── participantes.csv      # Participant list with tracking hashes
+LECCIÓN: [qué aprendiste o qué harías diferente la próxima vez]
 ```
 
-### File Details
-
-| File | Role |
-|------|------|
-| `plantilla_email.html` | HTML email that mimics BCP's brand. Contains `«Nombre»` and `«Enlace»` placeholders that must be replaced per recipient before sending. |
-| `landing.html` | Static page hosted at the phishing URL. Congratulates the user for identifying a phishing attempt (or informs them they clicked a simulated link). No server-side logic. |
-| `participantes.csv` | Plain CSV with three columns — `Nombre`, `Correo`, `Hash` — used to personalize emails and track who clicked via unique URL hashes. |
-
-## Placeholder Convention
-
-`plantilla_email.html` uses **guillemet-style placeholders** (`«…»`) for dynamic values:
-
-| Placeholder | Replace with |
-|-------------|--------------|
-| `«Nombre»` | Recipient's full name from `participantes.csv` |
-| `«Enlace»` | Tracking URL embedding the recipient's `Hash` value |
-
-Never send the template with unreplaced placeholders.
-
-## participantes.csv Schema
+Si no hay nada nuevo que aprender, escribe:
 
 ```
-Nombre,Correo,Hash
-Juan Pérez,juan@tuempresa.com,user123
+LECCIÓN: ninguna nueva en esta tarea.
 ```
 
-- **Nombre**: Full name used in email greeting.
-- **Correo**: Destination email address.
-- **Hash**: Unique token appended to the landing URL for per-user click tracking (e.g., `https://<host>/landing.html?h=user123`).
+Esto permite identificar patrones y mejorar el flujo de trabajo con el tiempo.
 
-Hashes must be unique per participant. Do not reuse hashes across campaigns.
+---
 
-## Development Workflow
+## Ramas de trabajo
 
-This project has no build system, package manager, or server-side code. All files are static.
+| Rama | Uso |
+|------|-----|
+| `main` | Solo código estable y revisado |
+| `claude/…` | Ramas de trabajo de Claude — siempre mergear via PR |
 
-### Typical Campaign Workflow
-
-1. Update `participantes.csv` with the current participant list.
-2. For each row, produce a personalized copy of `plantilla_email.html` by substituting `«Nombre»` and `«Enlace»`.
-3. Host `landing.html` at the domain used for `«Enlace»`.
-4. Send personalized emails via your mailer of choice.
-5. Monitor click events by watching for incoming requests carrying known `Hash` values.
-
-### Editing Templates
-
-- Edit `plantilla_email.html` with any text/HTML editor. Keep the BCP brand colors (`#003366` navy, `#ff6600` orange) consistent.
-- The footer already marks this as **"Ejercicio Educativo"** (educational exercise) in small text — do not remove this disclosure.
-- `landing.html` is intentionally brief. Keep its message clear and positive.
-
-## Key Conventions
-
-- **Language**: All user-facing copy is in Spanish (es-PE).
-- **No tracking pixels or external analytics**: the only tracking mechanism is the per-user hash in the URL.
-- **No secrets in the repo**: do not commit real employee emails or sensitive hashes to version control. The `participantes.csv` currently contains example/dummy data.
-- **Static only**: do not introduce server-side code, databases, or npm packages without explicit discussion.
-
-## Branches
-
-| Branch | Purpose |
-|--------|---------|
-| `main` | Stable, production-ready assets |
-| `claude/claude-md-docs-GTMlg` | AI-assisted documentation and improvements |
-
-Always develop on a feature branch and merge to `main` via pull request.
-
-## Security & Ethics Notes
-
-- This simulation is authorized by the organization running it.
-- The email template includes a small-print disclosure identifying it as a simulation.
-- Do not modify the project to harvest real credentials or remove the educational disclosure.
-- Participant data (even dummy data) should be handled according to the organization's data privacy policy.
+Nunca hagas push directo a `main`.
